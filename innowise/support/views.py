@@ -1,25 +1,50 @@
 from _testcapi import raise_exception
 from django.shortcuts import render
 from django.http import HttpResponse
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from rest_framework.views import APIView
-from .models import Ticket
+from .models import *
 from .serializers import TicketSerializer
 from rest_framework.response import Response
-
+from rest_framework.decorators import action
 
 
 def index(request):
     """Пробная ф-ц потом удалить"""
-    return HttpResponse('hallo')
+    return HttpResponse('Временно вместо page not found 404')
+
+
+class TicketViewSet(viewsets.ModelViewSet):
+    """class for CRUD"""
+    queryset = Ticket.objects.all() # выберет все записи и отдаст его методу
+    # list он после проверки отдаст его сериализатору сериализотор вернет те поля которые прописаны в поле
+    # field in class meta
+    serializer_class = TicketSerializer # указываем какой сериализотор будет обрабатывать данные queryset
+
+    # @action(methods=['get'], detail=True) #  True Отображение записи ответов, if False то всех записей
+    # def answer(self, request, pk = None): # add new path in class TicketViewSet
+    #     number_answer = Message.objects.get(pk=pk)
+    #     return Response({'number_answer': number_answer.text_answer,  'user_id': number_answer.user_id})
+
+
 
 # class TicketApiView(generics.ListAPIView):
 #     queryset = Ticket.objects.all()
 #     serializer_class = TicketSerializer
 
-class TicketApiList(generics.ListCreateAPIView):
-    queryset = Ticket.objects.all()  # Список записей возвращаемые по запросу
-    serializer_class = TicketSerializer # serializer  для применения к queryset
+# class TicketApiList(generics.ListCreateAPIView):
+#     """class for get and post"""
+#     queryset = Ticket.objects.all()  # Список записей возвращаемые по запросу
+#     serializer_class = TicketSerializer # serializer  для применения к queryset
+#
+# class TicketApiUpdate(generics.UpdateAPIView):
+#     """class for put or patch"""
+#     queryset = Ticket.objects.all()  # Вернет только одну измененную запись для отображения
+#     serializer_class = TicketSerializer  # serializer  для применения к queryset
+
+# class TicketAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Ticket.objects.all()
+#     serializer_class = TicketSerializer
 
 # class TicketApiView(APIView):
 #
@@ -30,7 +55,7 @@ class TicketApiList(generics.ListCreateAPIView):
 #
 #     def post(self, request):
 #         """Add data in BaseDate"""
-#         serializer = TicketSerializer(data=request.data) # входные lfyyst преобразованы в сериализатор
+#         serializer = TicketSerializer(data=request.data) # входные данные преобразованы в сериализатор in object
 #         serializer.is_valid(raise_exception=True) # Проверка данных
 #         serializer.save() # Вызовет метод create
 #

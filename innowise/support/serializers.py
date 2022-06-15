@@ -8,10 +8,10 @@ from .models import Ticket
 #         fields = ('user', 'text_ticket', 'status')
 
 class TicketSerializer(serializers.ModelSerializer):
-    """Данные в jso nреобразовывает в object"""
+    """Обработка данных"""
     class Meta:
         model = Ticket
-        fields =('user', 'text_ticket', 'time_create', 'status') # Поля возвражаемые по запросу
+        fields = ('user', 'text_ticket', 'time_create', 'status') # Поля возврашаемые по запросу из обработонного словаря
 
 
 

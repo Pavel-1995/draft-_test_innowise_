@@ -16,11 +16,23 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import  include
+from rest_framework import routers
+from support.views import  *    #TicketApiView,
 
-from support.views import  TicketApiList    #TicketApiView,
+router = routers.DefaultRouter() # создание objects class DefaultRouter
+router.register(r'ticket', TicketViewSet) # регисtrация TicketViewSet # get and post
 
 urlpatterns = [
+    path('', index),
     path('admin/', admin.site.urls),
-    path('api/ticketlist/', TicketApiList.as_view()),
-    path('api/ticketlist/<int:pk>/', TicketApiList.as_view()),
+    # path('api/', include(router.urls)),   # https:127.0.0.1:8000/api/ticket/...# ..ticket/pk/
+
+    path('api/ticketlist/', TicketViewSet.as_view({'get': 'list'})), # перейдя по
+    # ссылке api/ticketlist/ вызовется
+    # метод представления TicketViewSet
+    #  get-запрос, list-это во
+    #   views.py вызовется ModelViewSet он наследуется от ListModelMixin в нем вызрвется метод list
+    path('api/ticketlist/<int:pk>/', TicketViewSet.as_view({'put': 'update'})),
+
+
 ]
