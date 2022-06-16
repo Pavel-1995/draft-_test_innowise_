@@ -21,18 +21,21 @@ from support.views import  *    #TicketApiView,
 
 router = routers.DefaultRouter() # создание objects class DefaultRouter
 router.register(r'ticket', TicketViewSet) # регисtrация TicketViewSet # get and post
+print(router)
+
 
 urlpatterns = [
     path('', index),
     path('admin/', admin.site.urls),
-    # path('api/', include(router.urls)),   # https:127.0.0.1:8000/api/ticket/...# ..ticket/pk/
+    path('api/', include(router.urls)),  # соединяет 1 и 2 # ticket/ and ticket/<int:pk>/
+    # https:127.0.0.1:8000/api/ticket/...# ..ticket/pk/
 
-    path('api/ticketlist/', TicketViewSet.as_view({'get': 'list'})), # перейдя по
+    #1 path('api/ticketlist/', TicketViewSet.as_view({'get': 'list'})), # перейдя по
     # ссылке api/ticketlist/ вызовется
     # метод представления TicketViewSet
     #  get-запрос, list-это во
     #   views.py вызовется ModelViewSet он наследуется от ListModelMixin в нем вызрвется метод list
-    path('api/ticketlist/<int:pk>/', TicketViewSet.as_view({'put': 'update'})),
+    #2path('api/ticketlist/<int:pk>/', TicketViewSet.as_view({'put': 'update'})),
 
 
 ]

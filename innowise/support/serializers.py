@@ -8,7 +8,7 @@ from .models import Ticket
 #         fields = ('user', 'text_ticket', 'status')
 
 class TicketSerializer(serializers.ModelSerializer):
-    """Обработка данных"""
+    """Обработка данных in json """
     class Meta:
         model = Ticket
         fields = ('user', 'text_ticket', 'time_create', 'status') # Поля возврашаемые по запросу из обработонного словаря

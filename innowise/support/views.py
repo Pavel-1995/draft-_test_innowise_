@@ -14,14 +14,14 @@ def index(request):
     return HttpResponse('Временно вместо page not found 404')
 
 
-class TicketViewSet(viewsets.ModelViewSet):
-    """class for CRUD"""
-    queryset = Ticket.objects.all() # выберет все записи и отдаст его методу
+##class TicketViewSet(viewsets.ModelViewSet):
+   ## """class for CRUD"""
+   ## queryset = Ticket.objects.all() # выберет все записи и отдаст его методу
     # list он после проверки отдаст его сериализатору сериализотор вернет те поля которые прописаны в поле
     # field in class meta
-    serializer_class = TicketSerializer # указываем какой сериализотор будет обрабатывать данные queryset
-
-    # @action(methods=['get'], detail=True) #  True Отображение записи ответов, if False то всех записей
+   ## serializer_class = TicketSerializer # указываем какой сериализотор будет обрабатывать данные queryset
+    # @action(methods=['get'], detail=True) # return json
+    #  True Отображение записи ответов, if False то всех записей
     # def answer(self, request, pk = None): # add new path in class TicketViewSet
     #     number_answer = Message.objects.get(pk=pk)
     #     return Response({'number_answer': number_answer.text_answer,  'user_id': number_answer.user_id})
@@ -86,3 +86,34 @@ class TicketViewSet(viewsets.ModelViewSet):
 
 
 
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+
+
+class TicketViewSet(viewsets.ModelViewSet):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+    permission_classes_by_action = {
+                                   'list': [IsAdminUser],
+
+    }
+    def get_permissions(self):
+        try:
+            # return permission_classes depending on `action`
+            return [permission() for permission in self.permission_classes_by_action[self.action]]
+
+        except KeyError:
+            # action is not set return default permission_classes
+            return [permission() for permission in self.permission_classes]
+
+        # по умолчанию в get_permissions указано что в permission хранятся права
+        # которые будут применятся для запросов по умолчанию они берут это в сеттингс там для всех полей
+        # стоят права доступно для всех permission_classes если указать другие права то
+        # они тоже будут применяться для всех запросов что бы указать для каждого запроса свои права
+        # надо переопределить метод get_permissions что бы он применял рахные права для
+        # разных запросов т е нам надо изменить permission для этого мы прописываем
+        # permission_classes_by_action и пишем для каждого запроса свои права теперь нам надо эти
+        # изменения внести в permission try  говорит возьми из permission_classes_by_action
+        # все права которые прописаны для методов except говорит если в permission_classes_by_action
+        # не прописаны права для какого-ир запроса поставь этому запросу поведение как по умолчанию в
+        # permission а по умолчанию в permission хранятся права для всех запросов доступно всем что
+        # прописано и в сеттингс таким образом в permission_classes передастся измененная permission
