@@ -2,6 +2,7 @@ from _testcapi import raise_exception
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework import generics, viewsets
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from .models import *
 from .serializers import TicketSerializer
@@ -89,13 +90,21 @@ def index(request):
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 
 
+class TicketApiListPagination(PageNumberPagination):
+    page_size = 3  # ображение на стр по 3 записи
+    page_size_query_param = 'page_size' # переопределения атрибута page_size в строке запроса
+    max_page_size = 30 # ксимальное значение которое может принимать page_size_query_param
+    # т е отображать не более 30 записей на стр 
+
+
 class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
     permission_classes_by_action = {
-                                   'list': [IsAdminUser],
+                                   'list': [AllowAny],
 
     }
+    pagination_class = TicketApiListPagination
     def get_permissions(self):
         try:
             # return permission_classes depending on `action`

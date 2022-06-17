@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import  include
 from rest_framework import routers
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+
 from support.views import  *    #TicketApiView,
 
 router = routers.DefaultRouter() # создание objects class DefaultRouter
@@ -29,6 +31,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),  # соединяет 1 и 2 # ticket/ and ticket/<int:pk>/
     # https:127.0.0.1:8000/api/ticket/...# ..ticket/pk/
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # появляется поля для ввода
+    # логин и пароль
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),# если время
+    # истекло по этому пути вводим рефреш и получаем новый токены
+
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
     #1 path('api/ticketlist/', TicketViewSet.as_view({'get': 'list'})), # перейдя по
     # ссылке api/ticketlist/ вызовется
