@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Ticket
+from .models import Ticket, Message
 
 
 # class TicketSerializer(serializers.ModelSerializer):
@@ -9,9 +9,20 @@ from .models import Ticket
 
 class TicketSerializer(serializers.ModelSerializer):
     """Обработка данных in json """
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Ticket
         fields = ('user', 'text_ticket', 'time_create', 'status') # Поля возврашаемые по запросу из обработонного словаря
+
+class MessageSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    class Meta:
+        model = Message
+        fields = ('user', 'number_ticket_id', 'text_answer', 'time_create')
+
+
+
+
 
 
 

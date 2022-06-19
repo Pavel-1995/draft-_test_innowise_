@@ -138,14 +138,14 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer', # если в коменты поставить - отключит api и будет возвразать данные json
     ],
 
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+    # ]
 }
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=7),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=27),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
@@ -172,6 +172,6 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=7),
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=27),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=2),
 }

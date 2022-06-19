@@ -1,128 +1,161 @@
 from _testcapi import raise_exception
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework import generics, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from .models import *
-from .serializers import TicketSerializer
+from .permissions import IsAdminOrIsAuthenticated
+from .serializers import TicketSerializer, MessageSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
-
-
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
+#
+#
 def index(request):
     """Пробная ф-ц потом удалить"""
     return HttpResponse('Временно вместо page not found 404')
-
-
-##class TicketViewSet(viewsets.ModelViewSet):
-   ## """class for CRUD"""
-   ## queryset = Ticket.objects.all() # выберет все записи и отдаст его методу
-    # list он после проверки отдаст его сериализатору сериализотор вернет те поля которые прописаны в поле
-    # field in class meta
-   ## serializer_class = TicketSerializer # указываем какой сериализотор будет обрабатывать данные queryset
-    # @action(methods=['get'], detail=True) # return json
-    #  True Отображение записи ответов, if False то всех записей
-    # def answer(self, request, pk = None): # add new path in class TicketViewSet
-    #     number_answer = Message.objects.get(pk=pk)
-    #     return Response({'number_answer': number_answer.text_answer,  'user_id': number_answer.user_id})
-
-
-
-# class TicketApiView(generics.ListAPIView):
+#
+#
+# ##class TicketViewSet(viewsets.ModelViewSet):
+#    ## """class for CRUD"""
+#    ## queryset = Ticket.objects.all() # выберет все записи и отдаст его методу
+#     # list он после проверки отдаст его сериализатору сериализотор вернет те поля которые прописаны в поле
+#     # field in class meta
+#    ## serializer_class = TicketSerializer # указываем какой сериализотор будет обрабатывать данные queryset
+#     # @action(methods=['get'], detail=True) # return json
+#     #  True Отображение записи ответов, if False то всех записей
+#     # def answer(self, request, pk = None): # add new path in class TicketViewSet
+#     #     number_answer = Message.objects.get(pk=pk)
+#     #     return Response({'number_answer': number_answer.text_answer,  'user_id': number_answer.user_id})
+#
+#
+#
+# # class TicketApiView(generics.ListAPIView):
+# #     queryset = Ticket.objects.all()
+# #     serializer_class = TicketSerializer
+#
+# # class TicketApiList(generics.ListCreateAPIView):
+# #     """class for get and post"""
+# #     queryset = Ticket.objects.all()  # Список записей возвращаемые по запросу
+# #     serializer_class = TicketSerializer # serializer  для применения к queryset
+# #
+# # class TicketApiUpdate(generics.UpdateAPIView):
+# #     """class for put or patch"""
+# #     queryset = Ticket.objects.all()  # Вернет только одну измененную запись для отображения
+# #     serializer_class = TicketSerializer  # serializer  для применения к queryset
+#
+# # class TicketAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
+# #     queryset = Ticket.objects.all()
+# #     serializer_class = TicketSerializer
+#
+# # class TicketApiView(APIView):
+# #
+# #     def get(self, request):
+# #         """Get data from BaseData"""
+# #         t = Ticket.objects.all()
+# #         return Response({'ticket': TicketSerializer(t, many=True).data})
+# #
+# #     def post(self, request):
+# #         """Add data in BaseDate"""
+# #         serializer = TicketSerializer(data=request.data) # входные данные преобразованы в сериализатор in object
+# #         serializer.is_valid(raise_exception=True) # Проверка данных
+# #         serializer.save() # Вызовет метод create
+# #
+# #         # ticket_new = Ticket.objects.create(
+# #         #     text_ticket=request.data['text_ticket'], # Поля class TicketSerializer
+# #         #     user_id=request.data['user_id'],
+# #         #     status=request.data['status']
+# #         # )
+# #         #return Response({'ticket': TicketSerializer(ticket_new).data}) # Словарь добавленной записи
+# #         return Response({'ticket': serializer.data}) # data - return def create
+# #
+# #     def put(selfself, request, *args, **kwargs):
+# #         """Update data in BaseData"""
+# #         pk = kwargs.get('pk', None) # если нет ключа pk верни None
+# #         if not pk:
+# #             return Response({'error': 'not pk'})
+# #
+# #         try:  # Попробуй сделать
+# #             instance = Ticket.objects.get(pk=pk)
+# #         except:
+# #             return Response({'error': 'objects not found'})
+# #
+# #         # Если получили ключ и запись по pk создаем сериализатор
+# #         serializer = TicketSerializer(data=request.data, instance=instance) # Данные которые надо изменить
+# #         serializer.is_valid(raise_exception=True) # Проверка данных
+# #         serializer.save() # method save  вызывает def update
+# #         return Response({'ticket': serializer.data})
+#
+#
+#
+# from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+#
+#
+# # class TicketApiListPagination(PageNumberPagination):
+# #     page_size = 3  # ображение на стр по 3 записи
+# #     page_size_query_param = 'page_size' # переопределения атрибута page_size в строке запроса
+# #     max_page_size = 30 # ксимальное значение которое может принимать page_size_query_param
+# #     # т е отображать не более 30 записей на стр
+#
+#
+# class TicketViewSet(viewsets.ModelViewSet):
 #     queryset = Ticket.objects.all()
 #     serializer_class = TicketSerializer
-
-# class TicketApiList(generics.ListCreateAPIView):
-#     """class for get and post"""
-#     queryset = Ticket.objects.all()  # Список записей возвращаемые по запросу
-#     serializer_class = TicketSerializer # serializer  для применения к queryset
+#     permission_classes_by_action = {
+#                                    'list': [AllowAny], # list метод в миксинах
 #
-# class TicketApiUpdate(generics.UpdateAPIView):
-#     """class for put or patch"""
-#     queryset = Ticket.objects.all()  # Вернет только одну измененную запись для отображения
-#     serializer_class = TicketSerializer  # serializer  для применения к queryset
-
-# class TicketAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Ticket.objects.all()
-#     serializer_class = TicketSerializer
-
-# class TicketApiView(APIView):
+#     }
+#     #pagination_class = TicketApiListPagination
+#     def get_permissions(self):
+#         try:
+#             # return permission_classes depending on `action`
+#             return [permission() for permission in self.permission_classes_by_action[self.action]]
 #
-#     def get(self, request):
-#         """Get data from BaseData"""
-#         t = Ticket.objects.all()
-#         return Response({'ticket': TicketSerializer(t, many=True).data})
+#         except KeyError:
+#             # action is not set return default permission_classes
+#             return [permission() for permission in self.permission_classes]
 #
-#     def post(self, request):
-#         """Add data in BaseDate"""
-#         serializer = TicketSerializer(data=request.data) # входные данные преобразованы в сериализатор in object
-#         serializer.is_valid(raise_exception=True) # Проверка данных
-#         serializer.save() # Вызовет метод create
-#
-#         # ticket_new = Ticket.objects.create(
-#         #     text_ticket=request.data['text_ticket'], # Поля class TicketSerializer
-#         #     user_id=request.data['user_id'],
-#         #     status=request.data['status']
-#         # )
-#         #return Response({'ticket': TicketSerializer(ticket_new).data}) # Словарь добавленной записи
-#         return Response({'ticket': serializer.data}) # data - return def create
-#
-#     def put(selfself, request, *args, **kwargs):
-#         """Update data in BaseData"""
-#         pk = kwargs.get('pk', None) # если нет ключа pk верни None
-#         if not pk:
-#             return Response({'error': 'not pk'})
-#
-#         try:  # Попробуй сделать
-#             instance = Ticket.objects.get(pk=pk)
-#         except:
-#             return Response({'error': 'objects not found'})
-#
-#         # Если получили ключ и запись по pk создаем сериализатор
-#         serializer = TicketSerializer(data=request.data, instance=instance) # Данные которые надо изменить
-#         serializer.is_valid(raise_exception=True) # Проверка данных
-#         serializer.save() # method save  вызывает def update
-#         return Response({'ticket': serializer.data})
-
-
-
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
-
+#         # по умолчанию в get_permissions указано что в permission хранятся права
+#         # которые будут применятся для запросов по умолчанию они берут это в сеттингс там для всех полей
+#         # стоят права доступно для всех permission_classes если указать другие права то
+#         # они тоже будут применяться для всех запросов что бы указать для каждого запроса свои права
+#         # надо переопределить метод get_permissions что бы он применял рахные права для
+#         # разных запросов т е нам надо изменить permission для этого мы прописываем
+#         # permission_classes_by_action и пишем для каждого запроса свои права теперь нам надо эти
+#         # изменения внести в permission try  говорит возьми из permission_classes_by_action
+#         # все права которые прописаны для методов except говорит если в permission_classes_by_action
+#         # не прописаны права для какого-ир запроса поставь этому запросу поведение как по умолчанию в
+#         # permission а по умолчанию в permission хранятся права для всех запросов доступно всем что
+#         # прописано и в сеттингс таким образом в permission_classes передастся измененная permission
 
 class TicketApiListPagination(PageNumberPagination):
-    page_size = 3  # ображение на стр по 3 записи
-    page_size_query_param = 'page_size' # переопределения атрибута page_size в строке запроса
-    max_page_size = 30 # ксимальное значение которое может принимать page_size_query_param
-    # т е отображать не более 30 записей на стр 
+    page_size = 3
+    page_size_query_param = 'page_size'
+    max_page_size = 30
+
+class MessageApiListPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 30
 
 
 class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
-    permission_classes_by_action = {
-                                   'list': [AllowAny],
-
-    }
     pagination_class = TicketApiListPagination
-    def get_permissions(self):
-        try:
-            # return permission_classes depending on `action`
-            return [permission() for permission in self.permission_classes_by_action[self.action]]
+    permission_classes = (IsAdminOrIsAuthenticated,)
 
-        except KeyError:
-            # action is not set return default permission_classes
-            return [permission() for permission in self.permission_classes]
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+    pagination_class = MessageApiListPagination
+    #permission_classes = IsAdminUser
 
-        # по умолчанию в get_permissions указано что в permission хранятся права
-        # которые будут применятся для запросов по умолчанию они берут это в сеттингс там для всех полей
-        # стоят права доступно для всех permission_classes если указать другие права то
-        # они тоже будут применяться для всех запросов что бы указать для каждого запроса свои права
-        # надо переопределить метод get_permissions что бы он применял рахные права для
-        # разных запросов т е нам надо изменить permission для этого мы прописываем
-        # permission_classes_by_action и пишем для каждого запроса свои права теперь нам надо эти
-        # изменения внести в permission try  говорит возьми из permission_classes_by_action
-        # все права которые прописаны для методов except говорит если в permission_classes_by_action
-        # не прописаны права для какого-ир запроса поставь этому запросу поведение как по умолчанию в
-        # permission а по умолчанию в permission хранятся права для всех запросов доступно всем что
-        # прописано и в сеттингс таким образом в permission_classes передастся измененная permission
+# @receiver(post_save, sender=settings.CONSULT_MODEL)
+# def send_mail_on_create(sender, instance=None, created=False, **kwargs):
+#     if created:
+#         send_email() # call send mail function
