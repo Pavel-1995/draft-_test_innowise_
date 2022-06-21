@@ -26,7 +26,7 @@ router.register(r'ticket', TicketViewSet) # регисtrация TicketViewSet #
 #print(router.urls)
 router_2 = routers.SimpleRouter()
 router_2.register(r'message', MessageViewSet)
-print(router_2.urls)
+# print(router_2.urls)
 
 
 urlpatterns = [

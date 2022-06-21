@@ -1,5 +1,6 @@
 from _testcapi import raise_exception
 
+from django.core import mail
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.shortcuts import render
@@ -9,6 +10,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from .models import *
 from .permissions import IsAdminOrIsAuthenticated
+from django.core.mail import EmailMessage, send_mail
 from .serializers import TicketSerializer, MessageSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -143,11 +145,22 @@ class MessageApiListPagination(PageNumberPagination):
     max_page_size = 30
 
 
+
+
+
+
 class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
     pagination_class = TicketApiListPagination
     permission_classes = (IsAdminOrIsAuthenticated,)
+
+    def perform_update(self, serializer):
+        if serializer.save():
+            send_mail('status', 'Status your ticket changed', 'dudufhdbchfuhd@gmail.com', ['pavelalexei1177@gmail.com',], fail_silently=False)
+
+
+
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
@@ -155,7 +168,9 @@ class MessageViewSet(viewsets.ModelViewSet):
     pagination_class = MessageApiListPagination
     #permission_classes = IsAdminUser
 
-# @receiver(post_save, sender=settings.CONSULT_MODEL)
-# def send_mail_on_create(sender, instance=None, created=False, **kwargs):
-#     if created:
-#         send_email() # call send mail function
+
+
+
+
+
+

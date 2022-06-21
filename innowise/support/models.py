@@ -1,5 +1,8 @@
+import method as method
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Ticket(models.Model):
@@ -31,3 +34,5 @@ class Message(models.Model):
     def __str__(self):
         """Display answer"""
         return self.text_answer  ##Message.objects.all() это все поля text_answer в бд
+
+
