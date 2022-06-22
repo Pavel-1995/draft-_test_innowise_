@@ -10,6 +10,7 @@ class Ticket(models.Model):
     class Status(models.Model):
         """Class choice status"""
         statu_s = [
+            (0, "Ожидает получения вопроса"),
             (1, "В обработке"),
             (2, "Обработан"),
             (3, "Закрыт")
@@ -29,7 +30,7 @@ class Message(models.Model):
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
     number_ticket = models.ForeignKey(Ticket, on_delete=models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    text_answer = models.TextField(blank=True)
+    text_answer = models.TextField(blank=False)
 
     def __str__(self):
         """Display answer"""

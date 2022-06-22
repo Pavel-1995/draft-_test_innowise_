@@ -35,6 +35,7 @@ urlpatterns = [
     path('api/', include(router.urls)),  # соединяет 1 и 2 # ticket/ and ticket/<int:pk>/
     # https:127.0.0.1:8000/api/ticket/...# ..ticket/pk/
     path('api/', include(router_2.urls)),
+    #path('api/ticket_add/', TicketViewSet.as_view({'post': 'create'})),
     # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # появляется поля для ввода
     # # логин и пароль
     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),# если время
