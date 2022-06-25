@@ -32,7 +32,7 @@ router_2.register(r'message', MessageViewSet)
 urlpatterns = [
     path('', index),
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),  # соединяет 1 и 2 # ticket/ and ticket/<int:pk>/
+    path('api/', include(router.urls), name='list'),  # соединяет 1 и 2 # ticket/ and ticket/<int:pk>/
     # https:127.0.0.1:8000/api/ticket/...# ..ticket/pk/
     path('api/', include(router_2.urls)),
     #path('api/ticket_add/', TicketViewSet.as_view({'post': 'create'})),

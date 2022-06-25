@@ -154,7 +154,7 @@ class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
     pagination_class = TicketApiListPagination
-    permission_classes = (IsAdminOrIsAuthenticated,)
+    #permission_classes = (IsAdminOrIsAuthenticated,)
 
     def perform_update(self, serializer, default_status = 1):
         serializer.save()
