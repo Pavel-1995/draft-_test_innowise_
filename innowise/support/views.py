@@ -1,5 +1,5 @@
 from _testcapi import raise_exception
-
+from .tasks import send_email
 from django.core import mail
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -154,12 +154,13 @@ class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
     pagination_class = TicketApiListPagination
-    #permission_classes = (IsAdminOrIsAuthenticated,)
+    permission_classes = (IsAdminOrIsAuthenticated,)
 
     def perform_update(self, serializer, default_status = 1):
         serializer.save()
         if serializer.data['status'] != default_status:
-            send_mail('status', 'Status your ticket changed', 'dudufhdbchfuhd@gmail.com', ['pavelalexei1177@gmail.com',], fail_silently=False)
+            #send_mail('status', 'Status your ticket changed', 'dudufhdbchfuhd@gmail.com', ['pavelalexei1177@gmail.com',], fail_silently=False)
+            send_email.delay()
         else:
             print('error sent_email')
 
