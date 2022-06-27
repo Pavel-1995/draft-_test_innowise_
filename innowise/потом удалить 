@@ -1,0 +1,23 @@
+создать env
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'innowise.support',
+#         'USER': 'pavel',
+#         'PASSWORD': '87654321',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
+
+#SECRET_KEY = 'django-insecure-r-6(vsc-hw@l7v98yku8m20b0#jgit*h=d&c9h7onc7hx68xfr'
+
+EMAIL_HOST_USER = 'dudufhdbchfuhd@gmail.com'
+EMAIL_HOST_PASSWORD = 'inhjgwqdkuflavmv'
+   ALLOWED_HOSTS += [os.environ.get("ALLOWED_HOST")]
+
+DEBUG = str(os.environ.get('DEBUG')) == "1"  # 1 == True
+
+    env_file:
+      - .env

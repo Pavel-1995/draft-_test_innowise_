@@ -13,20 +13,27 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = str(os.environ.get('SECRET_KEY'))
 
+DEBUG = str(os.environ.get('DEBUG')) == "1"  # 1 == True
+
+
+ALLOWED_HOSTS = []
+if not DEBUG:
+    ALLOWED_HOSTS += [os.environ.get("ALLOWED_HOST")]
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r-6(vsc-hw@l7v98yku8m20b0#jgit*h=d&c9h7onc7hx68xfr'
+#SECRET_KEY = 'django-insecure-r-6(vsc-hw@l7v98yku8m20b0#jgit*h=d&c9h7onc7hx68xfr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -86,14 +93,26 @@ WSGI_APPLICATION = 'innowise.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'innowise.support',
-        'USER' : 'pavel',
-        'PASSWORD' : '87654321',
-        'HOST' : '127.0.0.1',
-        'PORT' : '5432',
+        'ENGINE': os.environ.get("POSTGRES_ENGINE"),
+        'NAME': os.environ.get("POSTGRES_NAME"),
+        'USER': os.environ.get("POSTGRES_USER"),
+        'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
+        'HOST': os.environ.get("POSTGRES_HOST"),
+        'PORT': os.environ.get("POSTGRES_PORT"),
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'innowise.support',
+#         'USER': 'pavel',
+#         'PASSWORD': '87654321',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation
@@ -163,7 +182,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'dudufhdbchfuhd@gmail.com'
 EMAIL_HOST_PASSWORD = 'inhjgwqdkuflavmv'
-
+DEFAULT_FROM_EMAIL = "default from email"
 
 
 
@@ -200,9 +219,9 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=2),
 }
 
-
-REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
-#REDIS_HOST = '127.0.0.1'
+INTERNAL_IPS = ['127.0.0.1']
+REDIS_HOST = 'redis'
+#REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
 REDIS_PORT = '6379'
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
