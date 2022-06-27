@@ -21,8 +21,75 @@ from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated, I
 def index(request):
     """Пробная ф-ц потом удалить"""
     return HttpResponse('Временно вместо page not found 404')
-#
-#
+
+
+class TicketApiListPagination(PageNumberPagination):
+    page_size = 4
+    page_size_query_param = 'page_size'
+    max_page_size = 30
+
+
+class MessageApiListPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 30
+
+
+class TicketViewSet(viewsets.ModelViewSet):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+    pagination_class = TicketApiListPagination
+    permission_classes = (IsAdminOrIsAuthenticated,)
+
+    def perform_update(self, serializer, default_status = 1):
+        serializer.save()
+        if serializer.data['status'] != default_status:
+            #send_mail('status', 'Status your ticket changed', 'dudufhdbchfuhd@gmail.com', ['pavelalexei1177@gmail.com',], fail_silently=False)
+            send_email.delay()
+        else:
+            print('error sent_email')
+
+    def perform_create(self, serializer, default_status = 1):
+        serializer.validated_data['status'] = default_status
+        serializer.save()
+
+
+    @action(methods=['get', 'post'], detail=True)
+    def answer(self, request, pk=None):
+        answer_s = Message.objects.get(number_ticket_id=pk)
+        num_ticket = Ticket.objects.get(pk=pk)
+        CreateModelMixin.create(self, request)
+        return Response({'ticket': num_ticket.text_ticket, 'answer': answer_s.text_answer})
+
+
+    @action(methods=['get'], detail=False)
+    def answer(self, request):
+        answer_s = Message.objects.filter(user=self.request.user).values()
+        num_ticket = Ticket.objects.filter(user=self.request.user).values()
+        return Response({'ticket': num_ticket, 'answer': answer_s})
+
+
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+    pagination_class = MessageApiListPagination
+    permission_classes = (IsAdminUser,)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#-------------Код начальной разработки для автора проекта------------------------------------------------------#
+
 # ##class TicketViewSet(viewsets.ModelViewSet):
 #    ## """class for CRUD"""
 #    ## queryset = Ticket.objects.all() # выберет все записи и отдаст его методу
@@ -122,77 +189,7 @@ def index(request):
 #             # action is not set return default permission_classes
 #             return [permission() for permission in self.permission_classes]
 #
-#         # по умолчанию в get_permissions указано что в permission хранятся права
-#         # которые будут применятся для запросов по умолчанию они берут это в сеттингс там для всех полей
-#         # стоят права доступно для всех permission_classes если указать другие права то
-#         # они тоже будут применяться для всех запросов что бы указать для каждого запроса свои права
-#         # надо переопределить метод get_permissions что бы он применял рахные права для
-#         # разных запросов т е нам надо изменить permission для этого мы прописываем
-#         # permission_classes_by_action и пишем для каждого запроса свои права теперь нам надо эти
-#         # изменения внести в permission try  говорит возьми из permission_classes_by_action
-#         # все права которые прописаны для методов except говорит если в permission_classes_by_action
-#         # не прописаны права для какого-ир запроса поставь этому запросу поведение как по умолчанию в
-#         # permission а по умолчанию в permission хранятся права для всех запросов доступно всем что
-#         # прописано и в сеттингс таким образом в permission_classes передастся измененная permission
 
-class TicketApiListPagination(PageNumberPagination):
-    page_size = 4
-    page_size_query_param = 'page_size'
-    max_page_size = 30
-
-class MessageApiListPagination(PageNumberPagination):
-    page_size = 5
-    page_size_query_param = 'page_size'
-    max_page_size = 30
-
-
-
-
-
-
-class TicketViewSet(viewsets.ModelViewSet):
-    queryset = Ticket.objects.all()
-    serializer_class = TicketSerializer
-    pagination_class = TicketApiListPagination
-    permission_classes = (IsAdminOrIsAuthenticated,)
-
-    def perform_update(self, serializer, default_status = 1):
-        serializer.save()
-        if serializer.data['status'] != default_status:
-            #send_mail('status', 'Status your ticket changed', 'dudufhdbchfuhd@gmail.com', ['pavelalexei1177@gmail.com',], fail_silently=False)
-            send_email.delay()
-        else:
-            print('error sent_email')
-
-    def perform_create(self, serializer, default_status = 1):
-        serializer.validated_data['status'] = default_status
-        serializer.save()
-
-
-    @action(methods=['get', 'post'], detail=True)
-    def answer(self, request, pk=None):
-        answer_s = Message.objects.get(number_ticket_id=pk)
-        num_ticket = Ticket.objects.get(pk=pk)
-        CreateModelMixin.create(self, request)
-        return Response({'ticket': num_ticket.text_ticket, 'answer': answer_s.text_answer})
-
-
-    @action(methods=['get'], detail=False)
-    def answer(self, request):
-        answer_s = Message.objects.filter(user=self.request.user).values()
-        num_ticket = Ticket.objects.filter(user=self.request.user).values()
-        return Response({'ticket': num_ticket, 'answer': answer_s})
-
-
-
-
-
-
-class MessageViewSet(viewsets.ModelViewSet):
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer
-    pagination_class = MessageApiListPagination
-    permission_classes = (IsAdminUser,)
 
 
 

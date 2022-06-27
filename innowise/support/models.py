@@ -22,7 +22,7 @@ class Ticket(models.Model):
 
     def __str__(self):
         """Display ticket"""
-        return self.text_ticket   #Ticket.objects.all() это все поля text_ticket в бд
+        return self.text_ticket
 
 
 class Message(models.Model):
@@ -34,6 +34,6 @@ class Message(models.Model):
 
     def __str__(self):
         """Display answer"""
-        return self.text_answer  ##Message.objects.all() это все поля text_answer в бд
+        return self.text_answer
 
 

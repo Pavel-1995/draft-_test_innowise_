@@ -1,12 +1,9 @@
-import method
+
 from rest_framework import serializers
 from .models import Ticket, Message
 
 
-# class TicketSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Ticket
-#         fields = ('user', 'text_ticket', 'status')
+
 
 class TicketSerializer(serializers.ModelSerializer):
     """Обработка данных in json """
@@ -36,6 +33,18 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
+
+
+#------------------Код начальной разработки для автора проекта----------------------------------#
+
+    # class TicketSerializer(serializers.ModelSerializer):
+    #     class Meta:
+    #         model = Ticket
+    #         fields = ('user', 'text_ticket', 'status')
 
 
     # text_ticket = serializers.CharField()  # Поля модели Ticket

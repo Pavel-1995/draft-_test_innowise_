@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+import environ
 import os
 from datetime import timedelta
 from pathlib import Path
@@ -180,15 +181,16 @@ EMAIL_USE_SSL = False
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'dudufhdbchfuhd@gmail.com'
-EMAIL_HOST_PASSWORD = 'inhjgwqdkuflavmv'
+# EMAIL_HOST_USER = 'dudufhdbchfuhd@gmail.com'
+# EMAIL_HOST_PASSWORD = 'inhjgwqdkuflavmv'
 DEFAULT_FROM_EMAIL = "default from email"
-
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=27),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=7),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
@@ -215,7 +217,7 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=27),
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=7),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=2),
 }
 
