@@ -1,8 +1,7 @@
-
 python manage.py migrate --noinput
 
 
-if [ "$DJANGO_SUPSER_NAME" ]
+if [ "$DJANGO_SUPERUSER_NAME" ]
 then
     python manage.py createsuperuser \
         --noinput \

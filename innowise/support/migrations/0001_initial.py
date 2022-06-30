@@ -15,29 +15,87 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Status',
+            name="Status",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Ticket',
+            name="Ticket",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text_ticket', models.TextField(blank=True)),
-                ('time_create', models.DateTimeField(auto_now_add=True, verbose_name='Время создания')),
-                ('status', models.PositiveSmallIntegerField(choices=[(1, 'В обработке'), (2, 'Обработан'), (3, 'Закрыт')], default=1, verbose_name='status')),
-                ('name_user', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("text_ticket", models.TextField(blank=True)),
+                (
+                    "time_create",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Время создания"
+                    ),
+                ),
+                (
+                    "status",
+                    models.PositiveSmallIntegerField(
+                        choices=[(1, "В обработке"), (2, "Обработан"), (3, "Закрыт")],
+                        default=1,
+                        verbose_name="status",
+                    ),
+                ),
+                (
+                    "name_user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Message',
+            name="Message",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('time_create', models.DateTimeField(auto_now_add=True, verbose_name='Время создания')),
-                ('text_answer', models.TextField(blank=True)),
-                ('name_user', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
-                ('ticket', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='support.ticket')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "time_create",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Время создания"
+                    ),
+                ),
+                ("text_answer", models.TextField(blank=True)),
+                (
+                    "name_user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "ticket",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, to="support.ticket"
+                    ),
+                ),
             ],
         ),
     ]

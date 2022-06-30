@@ -1,9 +1,12 @@
-from celery import Celery
-from celery.schedules import crontab
 import os
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'innowise.settings')
+from celery import Celery
 
-app = Celery('innowise')
-app.config_from_object('django.conf:settings', namespace='CELERY')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "innowise.settings")
+os.environ.setdefault("FORKED_BY_MULTIPROCESSING", "1")
+
+app = Celery("innowise")
+
+app.config_from_object("django.conf:settings", namespace="CELERY")
+
 app.autodiscover_tasks()

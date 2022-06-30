@@ -6,28 +6,28 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('support', '0001_initial'),
+        ("support", "0001_initial"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='message',
-            old_name='ticket',
-            new_name='number_ticket',
+            model_name="message",
+            old_name="ticket",
+            new_name="number_ticket",
         ),
         migrations.RenameField(
-            model_name='message',
-            old_name='name_user',
-            new_name='user',
+            model_name="message",
+            old_name="name_user",
+            new_name="user",
         ),
         migrations.RenameField(
-            model_name='ticket',
-            old_name='status',
-            new_name='status_id',
+            model_name="ticket",
+            old_name="status",
+            new_name="status_id",
         ),
         migrations.RenameField(
-            model_name='ticket',
-            old_name='name_user',
-            new_name='user',
+            model_name="ticket",
+            old_name="name_user",
+            new_name="user",
         ),
     ]
